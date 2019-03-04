@@ -48,6 +48,7 @@
     "url": "git://github.com/feross/timidity.git"
   },
   "scripts": {
+    "bundle": "browserify main.js |minify >gh-pages/timidity.js",
     "build": "./tools/build.sh",
     "download": "./tools/download.sh",
     "size": "npm run build && browserify . | minify | gzip | wc -c && cat libtimidity.wasm | gzip | wc -c",

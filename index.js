@@ -16,7 +16,7 @@ const SAMPLE_RATE = 44100
 const AUDIO_FORMAT = 0x8010 // format of the rendered audio 's16'
 const NUM_CHANNELS = 2 // stereo (2 channels)
 const BYTES_PER_SAMPLE = 2 * NUM_CHANNELS
-const BUFFER_SIZE = 16384 // buffer size for each render() call
+const BUFFER_SIZE = 4096 // buffer size for each render() call
 
 class Timidity extends EventEmitter {
   constructor (destNode, baseUrl = '/') {

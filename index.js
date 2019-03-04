@@ -18,11 +18,8 @@ const NUM_CHANNELS = 2 // stereo (2 channels)
 const BYTES_PER_SAMPLE = 2 * NUM_CHANNELS
 const BUFFER_SIZE = 16384 // buffer size for each render() call
 
-const AudioContext = typeof window !== 'undefined' &&
-  (window.AudioContext || window.webkitAudioContext)
-
 class Timidity extends EventEmitter {
-  constructor (baseUrl = '/') {
+  constructor (destNode, baseUrl = '/') {
     super()
 
     this.destroyed = false
@@ -42,10 +39,10 @@ class Timidity extends EventEmitter {
     this._startInterval = this._startInterval.bind(this)
     this._stopInterval = this._stopInterval.bind(this)
 
-    // If the Timidity constructor was not invoked inside a user-initiated event
+    // If the AudioContext was not created inside a user-initiated event
     // handler, then the AudioContext will be suspended. See:
     // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
-    this._audioContext = new AudioContext()
+    this._audioContext = destNode.context
 
     // Start the 'onaudioprocess' events flowing
     this._node = this._audioContext.createScriptProcessor(
@@ -55,7 +52,7 @@ class Timidity extends EventEmitter {
     )
     this._onAudioProcess = this._onAudioProcess.bind(this)
     this._node.addEventListener('audioprocess', this._onAudioProcess)
-    this._node.connect(this._audioContext.destination)
+    this._node.connect(destNode)
 
     this._lib = LibTimidity({
       locateFile: file => new URL(file, this._baseUrl).href,
@@ -383,10 +380,6 @@ class Timidity extends EventEmitter {
     if (this._node) {
       this._node.disconnect()
       this._node.removeEventListener('audioprocess', this._onAudioProcess)
-    }
-
-    if (this._audioContext) {
-      this._audioContext.close()
     }
 
     if (err) this.emit('error', err)

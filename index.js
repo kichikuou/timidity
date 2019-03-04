@@ -259,7 +259,7 @@ class Timidity extends EventEmitter {
 
     if (sampleCount > 0 && this._currentUrlOrBuf) {
       this._currentUrlOrBuf = null
-      this.emit('playing')
+      this.emit('playing', event.playbackTime)
       this._startInterval()
     }
 
